@@ -30,6 +30,22 @@ lines={
 'f=F/4*[(1-x)*(1-y);(1+x)*(1-y);(1-x)*(1+y);(1+x)*(1+y)];'
 'end'};
 chart.Script=strjoin(lines,newline);
+% MATLAB Function blocks initially expose one placeholder port. Compile/update
+% the diagram AFTER assigning the function script to materialize 9 inports
+% and 4 outports. Without this, connecting signals fails and leaves the
+% incomplete diagram shown in the original screenshot.
+try
+    set_param(model,'SimulationCommand','Update');
+catch ME
+    error('AS23:UpdateFailed', ['Could not update MATLAB Function ports. ' ...
+        'Run run_squat_demo first to initialize input data. Details: %s'], ME.message);
+end
+ports=get_param([model '/Load distribution'],'PortHandles');
+if numel(ports.Inport)~=9 || numel(ports.Outport)~=4
+    error('AS23:WrongPorts', ...
+        'Load distribution has %d inputs and %d outputs; expected 9/4. Check MATLAB Function block compilation.', ...
+        numel(ports.Inport),numel(ports.Outport));
+end
 for k=1:numel(inputs)
  add_line(model,[inputs{k} '/1'],['Load distribution/' num2str(k)],'autorouting','on');
 end
@@ -46,6 +62,7 @@ add_block('simulink/Sinks/Scope',[model '/Sensor scope'],...
 for k=1:3
  add_line(model,['Load distribution/' num2str(k)],['Sensor scope/' num2str(k)],'autorouting','on');
 end
+set_param(model,'SimulationCommand','Update');
 save_system(model);
 fprintf('Created %s.slx\n',model);
 end
