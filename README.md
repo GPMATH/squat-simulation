@@ -48,3 +48,7 @@ Motor/rope force direction and mounting are not yet established; treat any motor
 ### Compatibility
 
 MATLAB/Simulink code has not been executed in this environment, so there may be release-dependent issues with MATLAB Function blocks or timeseries dimensions. Tested algebraically by inspection only; run it in your MATLAB version and report any errors.
+
+## Interactive slider dashboard
+
+Run `squat_interactive` in MATLAB for a live visual explorer. Move the **total equivalent force**, **single-plate X/Y**, **left foot fraction**, and **independent left/right X/Y** sliders. Both plate configurations update immediately with per-sensor kgf readings and 300 kgf utilization. This dashboard is a MATLAB figure (not an embedded Simulink dashboard) and is meant for teaching and sensitivity exploration. It assumes the selected total load and foot-share directly; unlike the time-series model it does not independently calculate acceleration.
