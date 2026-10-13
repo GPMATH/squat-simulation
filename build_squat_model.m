@@ -13,7 +13,7 @@ for k=1:numel(inputs)
 end
 add_block('simulink/User-Defined Functions/MATLAB Function',[model '/Load distribution'],...
 'Position',[305 140 555 490]);
-chart=sfroot.find('-isa','Stateflow.EMChart','Path',[model '/Load distribution']);
+chart=sfroot().find('-isa','Stateflow.EMChart','Path',[model '/Load distribution']);
 assert(~isempty(chart),'Cannot access MATLAB Function block');
 lines={
 'function [single,left,right,total] = distribute(a,motorN,sx,sy,share,lx,ly,rx,ry)'
