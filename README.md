@@ -63,7 +63,7 @@ cd('squat-simulation') % if not already in this folder
 results = compare_squat_motors;
 ```
 
-This creates **two MATLAB figures**, prints a 5:1 comparison table and writes `alex_squat_motor_screening.csv` with results for each motor at 3:1, 5:1, 7:1 and 10:1 reductions. Existing load-plate Simulink scripts remain unchanged.
+This creates **five MATLAB figures**, prints a 5:1 comparison table and writes `alex_squat_motor_screening.csv` with results for each motor at 3:1, 5:1, 7:1 and 10:1 reductions. Existing load-plate Simulink scripts remain unchanged.
 
 **Candidates:** JK130BLS115, 120, 140, 165, 190; Freerchobby 83 mm hub motor, 8055, MP80100 (130 Kv screening case), MP8318; JK110BLS50; Golden Motor HPM-10KW.
 
