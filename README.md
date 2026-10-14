@@ -52,3 +52,32 @@ MATLAB/Simulink code has not been executed in this environment, so there may be 
 ## Interactive slider dashboard
 
 Run `squat_interactive` in MATLAB for a live visual explorer. Move the **total equivalent force**, **single-plate X/Y**, **left foot fraction**, and **independent left/right X/Y** sliders. Both plate configurations update immediately with per-sensor kgf readings and 300 kgf utilization. This dashboard is a MATLAB figure (not an embedded Simulink dashboard) and is meant for teaching and sensitivity exploration. It assumes the selected total load and foot-share directly; unlike the time-series model it does not independently calculate acceleration.
+
+
+## Motor / controller comparison (new)
+
+Run in MATLAB (no Simulink license required for this calculation):
+
+```matlab
+cd('squat-simulation') % if not already in this folder
+results = compare_squat_motors;
+```
+
+This creates **two MATLAB figures**, prints a 5:1 comparison table and writes `alex_squat_motor_screening.csv` with results for each motor at 3:1, 5:1, 7:1 and 10:1 reductions. Existing load-plate Simulink scripts remain unchanged.
+
+**Candidates:** JK130BLS115, 120, 140, 165, 190; Freerchobby 83 mm hub motor, 8055, MP80100 (130 Kv screening case), MP8318; JK110BLS50; Golden Motor HPM-10KW.
+
+**Controller suggestion from professor:** Freerchobby/Makerbase VESC 75100 (advertised 75 V, 100 A). This is *not* a validated continuous rating or a recommendation to use that controller at the full design point. The 130 Kv MP80100 estimates the ideal motor FOC torque current at each ratio; compare it to **validated controller motor phase current** after checking convention and thermals. DC bus current and motor phase current are different. A nominal 72 V lithium pack can exceed 75 V when fully charged, before regeneration.
+
+**Test case:** 150 kg athlete; virtual 200 kg lifted load; +3 m/s² acceleration during ascent; 25 mm drum; 1.5 m/s speed. Upward generation uses F=200(g+3) N; downward motoring is shown as an independently commanded *200 kgf* force, rather than silently treating it as the same mass acceleration. Transmission 85%, motor 90%, inverter 95% assumed. The 150 kg athlete mass is an environment/design constraint, NOT added to motor rope force. The platform force and individual load cells remain separate questions.
+
+**Important:** Peak, rated and continuous figures in vendor listings are not equivalent. Continuous torque-speed curves for the Freerchobby motors and Golden Motor cooling configuration are still missing. `NaN` means unavailable data, and the calculated KV-related current is only an approximation. The script is a **screening calculator, not a verified motor physics/thermal model or a motor approval**. The plots of required torque and electrical power are intentionally identical for all motors at the same ratio; they represent the *demand*. Look at each motor's separate published capabilities and request verified data to judge whether it meets those demands.
+
+Supplier references:
+- https://www.freerchobby.cc/products/mp-83mm-hub-motor-8nm-torque-for-electric-skateboard?variant=34875688714401
+- https://www.freerchobby.cc/products/8055-powerful-bldc-motor-for-off-road-electric-skateboard-all-terrain-scooter
+- https://www.freerchobby.cc/products/mp-80100-rc-outrunner-brushless-motor-for-e-bike?variant=34859259297953
+- https://www.freerchobby.cc/products/mp-8318-2870w-brushless-motor-for-agricultural-uav-drone-%E7%9A%84%E5%89%AF%E6%9C%AC?variant=39725100564641
+- https://www.freerchobby.cc/products/makerbase-vesc-75100-75v-100a-based-on-benjamin-vesc6-highpower-for-electric-skateboard-scooter-ebike-controller
+- https://www.jkongmotor.com/phoenix/admin/siteSearch/search?searchValue=110BLS50&searchSiteStyle=&searchComponentSettingId=kdKZkWUCiODE
+
