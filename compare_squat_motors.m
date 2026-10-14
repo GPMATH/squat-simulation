@@ -100,7 +100,7 @@ fprintf('IMPORTANT: Rated power/torque NOT verified for Freerchobby/Golden entri
 view5=results(results.Reduction==5,:);
 disp(view5(:,{'Motor','MotorRPM','GeneratingTorqueNm','MotoringTorqueNm', ...
  'ApproxGeneratingIqA','ApproxMotoringIqA'}));
-figure('Name','Alex Squat motor comparison: 5-to-1 gearing');
+figure('Name','Alex Squat required loads: same for all motors at 5-to-1');
 subplot(2,1,1);
 bar([view5.GeneratingTorqueNm view5.MotoringTorqueNm]);
 set(gca,'XTick',1:n,'XTickLabel',names); xtickangle(35);
@@ -113,6 +113,27 @@ set(gca,'XTick',1:n,'XTickLabel',names); xtickangle(35);
 ylabel('Bus power magnitude [kW]'); grid on;
 legend('Down: DC input','Up: DC regeneration','Location','best');
 title('Energy management duty — 5:1 gear, illustrative efficiencies');
+% Candidate-specific catalog comparison (blank bars = not verified).
+figure('Name','Alex Squat: known catalog ratings versus demands');
+subplot(2,1,1);
+bar([rated_Nm repmat(view5.MotoringTorqueNm(1),n,1)]);
+set(gca,'XTick',1:n,'XTickLabel',names); xtickangle(35);
+ylabel('Shaft torque [Nm]');grid on;
+legend('Published nominal torque (missing = 0)','Required down motoring torque','Location','best');
+title('Nominal torque is NOT verified at the required motor speed');
+subplot(2,1,2);
+bar([nominal_W/1000 repmat(view5.MotoringShaftKW(1),n,1)]);
+set(gca,'XTick',1:n,'XTickLabel',names); xtickangle(35);
+ylabel('Shaft power [kW]');grid on;
+legend('Published nominal power (missing = 0)','Required down motoring power','Location','best');
+title('Unspecified motor entries deliberately have no rated bar');
+figure('Name','Alex Squat: MP80100 130Kv and VESC current screening');
+rq=results(strcmp(results.Motor,'Freerchobby MP80100'),:);
+bar(rq.Reduction,[rq.ApproxGeneratingIqA rq.ApproxMotoringIqA]);
+hold on; yline(100,'--','100 A advertised VESC 75100 (not verified continuous)');
+grid on; xlabel('Reduction ratio');ylabel('Approximate motor q-axis current [A]');
+legend('Up generating','Down motoring','Advertised controller figure','Location','best');
+title('130Kv ideal Kt model only — verify current convention & cooling');
 figure('Name','Alex Squat: gearbox ratio trade-off');
 G=p.gear_ratios;
 plot(G,p.up_force_N*p.drum_radius_m*p.gear_efficiency./G,'-o','LineWidth',1.5);
